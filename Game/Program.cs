@@ -27,7 +27,7 @@ namespace Kitty
                 Console.WriteLine("Пол вашего котенка (Мальчик/Девочка)");
                 MJ = Console.ReadLine();
                 MJ = MJ.ToLower();
-                if (MJ != "мальчик" && MJ != "девочка" || MJ == null) throw new Exception();
+                if (!MJ.Contains("мальчик") && !MJ("девочка") || MJ == null) throw new Exception();
                 Console.Write("Имя котенка: ");
                 Name = Console.ReadLine();
                 LevelEating = 4;
