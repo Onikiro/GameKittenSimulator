@@ -1,59 +1,92 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Text.RegularExpressions;
+
 namespace Kitty
 {
     enum Food { рыба = 6, сосиски = 5, хлеб = 3, мясо = 8, }
     class Cat
     {
-        #region Переменные 
-        string MJ { get; set; } //Пол 
+        string Sex { get; set; } //Пол 
         string Name { get; set; }
         int LevelEating { get; set; }
         float age { get; set; }
         string enter { get; set; } //Вводные данные
         int Happines { get; set; }
         int points = 10;
-        #endregion
 
-        public void StartGame()
+        private void SetSex(string sex)
         {
             try
             {
-                Console.Clear();
                 Console.WriteLine("Пол вашего котенка (Мальчик/Девочка)");
-                MJ = Console.ReadLine();
-                MJ = MJ.ToLower();
-                if (!MJ.Contains("мальчик") && !MJ("девочка") || MJ == null) throw new Exception();
-                Console.Write("Имя котенка: ");
-                Name = Console.ReadLine();
-                LevelEating = 4;
-                Happines = 5;
-
+                sex = Console.ReadLine();
+                sex = sex.ToLower();
+                if (!sex.Contains("мальчик") && !sex.Contains("девочка") || sex == null) throw new Exception();
             }
             catch (Exception)
             {
-                Console.WriteLine("Пол выбран неверно" + "\n" + "Нажмите любую клавишу..");
+                Console.WriteLine("Пол выбран неверно\nНажмите любую клавишу..");
                 Console.ReadKey();
                 StartGame();
             }
+        }
+
+        private void SetStats(int eatStat, int happyStat)
+        {
+            eatStat = 4;
+            happyStat = 5;
+        }
+
+        private void SetName(string name)
+        {
+            Console.Write("Имя котенка: ");
+            name = Console.ReadLine();
+        }
+
+        public void StartGame()
+        {
+            SetSex(Sex);
+            SetName(Name);
+            SetStats(LevelEating, Happines);
             Console.Clear();
-            Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~");
+        }
+
+        private void UISexName(string sex, string catName)
+        {
+            if (sex == "мальчик") Console.WriteLine($"Имя кота: {catName}");
+            else if (sex == "девочка") Console.WriteLine($"Имя кошечки: {catName}");
+        }
+
+        private void Warns()
+        {
+            if (LevelEating > 8) Console.WriteLine("Котик голоден!");
+            if (Happines < 2) Console.WriteLine("Котик грустит!");
+            Console.WriteLine();
+            if (LevelEating > 10)
+            {
+                Console.WriteLine("Котик ушел к другому хозяину, потому что вы его не кормили.");
+                Console.ReadKey();
+                Console.Clear();
+                age = 0;
+                StartGame();
+            }
+            if (Happines < 0)
+            {
+                Console.WriteLine("Котик ушел к другому хозяину, потому что ему стало очень грустно.");
+                Console.ReadKey();
+                Console.Clear();
+                age = 0;
+                StartGame();
+            }
         }
 
         public void GUI()
         {
             while (true)
             {
-                Console.Clear();
                 Warns();
-                Console.WriteLine("Пол питомца - " + MJ + "\n" + "Возраст питомца: " + age +" дней" + "\n" + "Голод: " + LevelEating + "\n" + "Настроение: " + Happines + "\n" + "Очки: " + points);
-                if (MJ == "мальчик") Console.WriteLine("Имя кота: " + Name);
-                else if (MJ == "девочка") Console.WriteLine("Имя кошечки: " + Name);
-                Console.WriteLine("\n");
+                Console.WriteLine($"Пол питомца - {Sex}\nВозраст питомца: {age} дней\nГолод: {LevelEating}\nНастроение: {Happines}\nОчки: {points}\n\n");
+                UISexName(Sex, Name);
+
                 try
                 {
                     Console.WriteLine("Возможные действия: Покормить, Погулять, Поиграть, Тренировать");
@@ -114,29 +147,6 @@ namespace Kitty
                 Console.WriteLine();
                 Console.Clear();
                 GUI();
-            }
-        }
-
-        void Warns()
-        {
-            if (LevelEating > 8) Console.WriteLine("Котик голоден!");
-            if (Happines < 2) Console.WriteLine("Котик грустит!");
-            Console.WriteLine();
-            if (LevelEating > 10)
-            {
-                Console.WriteLine("Котик ушел к другому хозяину, потому что вы его не кормили.");
-                Console.ReadKey();
-                Console.Clear();
-                age = 0;
-                StartGame();
-            }
-            if (Happines < 0)
-            {
-                Console.WriteLine("Котик ушел к другому хозяину, потому что ему стало очень грустно.");
-                Console.ReadKey();
-                Console.Clear();
-                age = 0;
-                StartGame();
             }
         }
 
