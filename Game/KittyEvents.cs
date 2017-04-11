@@ -1,31 +1,37 @@
 ﻿using System;
 
-namespace ConsoleApplication1
+namespace Kitty
 {
     enum Food { рыба = 6, сосиски = 5, хлеб = 3, мясо = 8, }
-    class KittyEvents
+    public class KittyEvents
     {
         string enter; //Вводные данные
         bool isLive = false;
+        public bool IsLive => isLive;
 
-        public void GUI(KittySim cat)
+        public KittyEvents(KittySim cat)
+        {
+            GUI(cat);
+        }
+
+        void GUI(KittySim cat)
         {
             isLive = true;
             while (isLive)
             {
                 Console.Clear();
                 CatInfo(cat);
-                Warns(cat.LevelEating, cat.Happines, cat.age);
+                Warns(cat);
                 Actions(cat);
-                AddCatStats(cat.age, cat.LevelEating, cat.Happines);
+                AddCatStats(cat);
             }
         }
 
-        void AddCatStats(float age, int eat ,int happy)
+        void AddCatStats(KittySim cat)
         {
-            age += 0.5f;
-            eat += 2;
-            happy -= 1;
+            cat.age += 0.5f;
+            cat.LevelEating += 2;
+            cat.Happines -= 1;
         }
 
         void CatInfo(KittySim cat)
@@ -53,21 +59,7 @@ namespace ConsoleApplication1
                 {
                     case "покормить":
                         {
-                            try
-                            {
-                                Console.WriteLine("Чем будем кормить? Напиши: \nРыба    || 6 очков \nСосиски || 3 очка \nХлеб    || 2 очка \nМясо    || 8 очков ");
-                                string food = Convert.ToString(Console.ReadLine());
-                                food = food.ToLower();
-                                Food foodChange = (Food)Enum.Parse(typeof(Food), food);
-                                EatSomething(foodChange, cat);
-                                Console.ReadKey();
-                            }
-                            catch (Exception)
-                            {
-                                Console.WriteLine("Выбрано что-то не из списка" + "\n" + "Нажмите любую клавишу..");
-                                Console.ReadKey();
-                                GUI(cat);
-                            }
+                            GiveEat(cat);
                             break;
                         }
                     case "погулять":
@@ -77,10 +69,7 @@ namespace ConsoleApplication1
                         }
                     case "поиграть":
                         {
-                            cat.Happines += 5;
-                            cat.LevelEating += 3;
-                            Console.WriteLine("Вы поиграли с котейкой, по имени {0}, настроение повысилось на 5!" + "\n" + "Нажмите любую клавишу..", cat.Name);
-                            Console.ReadKey();
+                            Play(cat);
                             break;
                         }
                     case "тренировать":
@@ -88,100 +77,98 @@ namespace ConsoleApplication1
                             Train(cat);
                             break;
                         }
+                    default:
+                        {
+                            throw new Exception();
+                        }
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                Console.WriteLine("Ошибка выбора");
+                Console.WriteLine($"Ошибка выбора\n{e.Message}");
                 GUI(cat);
             }
         }
 
-        void Warns(int eats, int happy, float age)
+        void GiveEat(KittySim cat)
         {
-            if (eats > 8)
+            try
+            {
+                Console.WriteLine("Чем будем кормить? Напиши: \nРыба    || 6 очков \nСосиски || 3 очка \nХлеб    || 2 очка \nМясо    || 8 очков ");
+                string food = Convert.ToString(Console.ReadLine());
+                food = food.ToLower();
+                Food foodChange = (Food)Enum.Parse(typeof(Food), food);
+                EatSomething(foodChange, cat);
+                Console.ReadKey();
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Выбрано что-то не из списка" + "\n" + "Нажмите любую клавишу..");
+                Console.ReadKey();
+                GUI(cat);
+            }
+        }
+
+        void Play(KittySim cat)
+        {
+            cat.Happines += 5;
+            cat.LevelEating += 3;
+            Console.WriteLine("Вы поиграли с котейкой, настроение повысилось на 5!" + "\n" + "Нажмите любую клавишу..");
+            Console.ReadKey();
+        }
+
+        void Warns(KittySim cat)
+        {
+            if (cat.LevelEating > 8)
             {
                 Console.WriteLine("Котик голоден!");
             }
-            if (happy < 2)
+            if (cat.Happines < 2)
             {
                 Console.WriteLine("Котик грустит!");
             }
             Console.WriteLine();
-            if (eats > 10)
+            if (cat.LevelEating > 10)
             {
+                Console.Clear();
                 Console.WriteLine("Котик ушел к другому хозяину, потому что вы его не кормили.");
-                GameOver(age);
+                GameOver(cat);
             }
-            if (happy < 0)
+            if (cat.Happines < 0)
             {
+                Console.Clear();
                 Console.WriteLine("Котик ушел к другому хозяину, потому что ему стало очень грустно.");
-                GameOver(age);
+                GameOver(cat);
             }
         }
 
-        void GameOver(float age)
+        void GameOver(KittySim cat)
         {
             Console.ReadKey();
             Console.Clear();
-            age = 0;
-            isLive = false;
+            cat.age = 0;
+            cat.StartGame();
+            GUI(cat);
         }
 
-        public void EatSomething(Food something, KittySim cat)
+        void EatSomething(Food something, KittySim cat)
         {
-            switch ((int)something)
+            if ((int)something < cat.Points)
             {
-                case 6:
-                    {
-                        if (6 < cat.Points)
-                        {
-                            cat.LevelEating -= (int)something;
-                            Console.WriteLine("Голод уменьшился на {0}!", (int)something);
-                            cat.Points -= 6;
-                        }
-                        else Console.WriteLine("Не хватает очков!" + "\n" + "Нажмите любую клавишу...");
-                        break;
-                    }
-                case 5:
-                    {
-                        if (3 < cat.Points)
-                        {
-                            cat.LevelEating -= (int)something;
-                            Console.WriteLine("Голод уменьшился на {0}!", (int)something);
-                            cat.Points -= 3;
-                        }
-                        else Console.WriteLine("Не хватает очков!" + "\n" + "Нажмите любую клавишу...");
-                        break;
-                    }
-                case 3:
-                    {
-                        if (2 < cat.Points)
-                        {
-                            cat.LevelEating -= (int)something;
-                            Console.WriteLine("Голод уменьшился на {0}!", (int)something);
-                            cat.Points -= 2;
-                        }
-                        else Console.WriteLine("Не хватает очков!" + "\n" + "Нажмите любую клавишу...");
-                        break;
-                    }
-                case 8:
-                    {
-                        if (8 < cat.Points)
-                        {
-                            cat.LevelEating -= (int)something;
-                            Console.WriteLine("Голод уменьшился на {0}!", (int)something);
-                            cat.Points -= 8;
-                        }
-                        else Console.WriteLine("Не хватает очков!" + "\n" + "Нажмите любую клавишу...");
-                        break;
-                    }
+                cat.LevelEating -= (int)something;
+                cat.Points -= (int)something;
+                Console.WriteLine($"Голод уменьшился на {(int)something}!");
             }
+            else
+            {
+                Console.WriteLine("Не хватает очков!" + "\n" + "Нажмите любую клавишу...");
+            }
+
             if (cat.LevelEating > 11) cat.LevelEating = 11;
             if (cat.LevelEating < 0) cat.LevelEating = 0;
         }
 
-        public void Walking(KittySim cat)
+        void Walking(KittySim cat)
         {
             string[] Events = { "Котик поймал вкусного жучка! Голод -2, настроение +3", "Котик подрался с другим котиком! Голод +2, настроение -1" };
             Random randomEvent = new Random();
@@ -198,11 +185,11 @@ namespace ConsoleApplication1
                 cat.LevelEating += 2;
             }
             Console.WriteLine();
-            Console.WriteLine("Вы погуляли с котейкой по имени {0}!" + "\n" + "\n" + "Нажмите любую клавишу..", cat.Name);
+            Console.WriteLine("Вы погуляли с котейкой!" + "\n" + "\n" + "Нажмите любую клавишу..");
             Console.ReadKey();
         }
 
-        public void Train(KittySim cat)
+        void Train(KittySim cat)
         {
             string[] Events = { "Котик отлично позанимался! +5 поинтов", "Котик неплохо позанимался! +3 поинта", "Котик слабовато занимался.. +1 поинт", "Котик всё время отвлекался! +0 поинтов" };
             string Warn = "\n" + "Нажмите любую клавишу...";

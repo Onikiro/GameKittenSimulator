@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ConsoleApplication1
+namespace Kitty
 {
     public class KittySim
     {
@@ -8,20 +8,25 @@ namespace ConsoleApplication1
         string sex;
         string name;
 
-        public string Sex => sex;
+        public string   Sex => sex;
         public string Name => name;
 
-        public int LevelEating { get; set; }
-        public float age { get; set; }
-        public int Happines { get; set; }
-        public int Points { get; set; }
+        public  int   LevelEating { get; set; }
+        public float          age { get; set; }
+        public   int     Happines { get; set; }
+        public   int       Points { get; set; }
 
-        public KittySim()
+        public void StartGame()
         {
             ChangeSex();
             ChangeName();
-            ChangeStats(LevelEating, Happines);
+            ChangeStats();
             Console.Clear();
+        }
+
+        public KittySim()
+        {
+            StartGame();
         }
 
         void ChangeSex()
@@ -50,10 +55,10 @@ namespace ConsoleApplication1
             name = Console.ReadLine();
         }
 
-        void ChangeStats(int eat, int happy)
+        void ChangeStats()
         {
-            eat = 5;
-            happy = 5;
+            LevelEating = 5;
+            Happines = 5;
             Points = 10;
         }
 
