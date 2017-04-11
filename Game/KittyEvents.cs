@@ -5,7 +5,6 @@ namespace Kitty
     enum Food { рыба = 6, сосиски = 5, хлеб = 3, мясо = 8, }
     public class KittyEvents
     {
-        string enter; //Вводные данные
         bool isLive = false;
         public bool IsLive => isLive;
 
@@ -51,6 +50,7 @@ namespace Kitty
         {
             try
             {
+                string enter; //Вводные данные
                 Console.WriteLine("Возможные действия: Покормить, Погулять, Поиграть, Тренировать");
                 Console.Write("Напишите действие: ");
                 enter = Console.ReadLine();
