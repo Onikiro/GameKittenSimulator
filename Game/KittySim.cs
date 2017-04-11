@@ -16,17 +16,17 @@ namespace Kitty
         public   int     Happines { get; set; }
         public   int       Points { get; set; }
 
+        public KittySim()
+        {
+            StartGame();
+        }
+
         public void StartGame()
         {
             ChangeSex();
             ChangeName();
             ChangeStats();
             Console.Clear();
-        }
-
-        public KittySim()
-        {
-            StartGame();
         }
 
         void ChangeSex()
@@ -62,17 +62,5 @@ namespace Kitty
             Points = 10;
         }
 
-        public string GetStat(string stat)
-        {
-            return stat;
-        }
-        public int GetStat(int stat)
-        {
-            return stat;
-        }
-        public float GetStat(float stat)
-        {
-            return stat;
-        }
     }
 }
