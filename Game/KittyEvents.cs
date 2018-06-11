@@ -2,7 +2,7 @@
 
 namespace Kitty
 {
-    enum Food { рыба = 6, сосиски = 5, хлеб = 3, мясо = 8, }
+    enum Food { fish = 6, sausages = 5, bread = 3, meat = 8, }
     public class KittyEvents
     {
         bool isLive = false;
@@ -28,14 +28,14 @@ namespace Kitty
 
         void AddCatStats(KittySim cat)
         {
-            cat.age += 0.5f;
-            cat.LevelEating += 2;
+            cat.Age += 0.5f;
+            cat.HungerLevel += 2;
             cat.Happines -= 1;
         }
 
         void CatInfo(KittySim cat)
         {
-            Console.WriteLine($"Имя питомца: {cat.Name}\nПол питомца - {cat.Sex}\nВозраст питомца: {cat.age} дней\nГолод: {cat.LevelEating}\nНастроение: {cat.Happines}\nОчки: {cat.Points}");
+            Console.WriteLine($"Pet's name: {cat.Name}\nPet's sex: {cat.Sex}\nPet's age: {cat.Age} days\nPet's hunger: {cat.HungerLevel}\nPet's happines: {cat.Happines}\nPet's points: {cat.Points}");
         }
 
         void Actions(KittySim cat)
@@ -43,50 +43,55 @@ namespace Kitty
             try
             {
                 string input; //Вводные данные
-                Console.WriteLine("Возможные действия: Покормить, Погулять, Поиграть, Тренировать");
-                Console.Write("Напишите действие: ");
+                Console.WriteLine("Possible actions: feed, walk, play, train");
+                Console.Write("Choose one action: ");
                 input = Console.ReadLine();
                 input = input.ToLower();
                 switch (input)
                 {
-                    case "покормить":
+                    case "feed":
                         {
-                            GiveEat(cat);
+                            Feed(cat);
+                            Console.ReadLine();
                             break;
                         }
-                    case "погулять":
+                    case "walk":
                         {
                             Walking(cat);
+                            Console.ReadLine();
                             break;
                         }
-                    case "поиграть":
+                    case "play":
                         {
                             Play(cat);
+                            Console.ReadLine();
                             break;
                         }
-                    case "тренировать":
+                    case "train":
                         {
                             Train(cat);
+                            Console.ReadLine();
                             break;
                         }
                     default:
                         {
-                            throw new Exception();
+                            Console.WriteLine("Wrong action!");
+                            break;
                         }
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Ошибка выбора\n{e.Message}");
+                Console.WriteLine($"{e.Message}");
                 GUI(cat);
             }
         }
 
-        void GiveEat(KittySim cat)
+        void Feed(KittySim cat)
         {
             try
             {
-                Console.WriteLine($"Чем будем кормить? Напиши: \nРыба    || {(int)Food.рыба/2} очков \nСосиски || {(int)Food.сосиски / 2} очка \nХлеб    || {(int)Food.хлеб / 2} очка \nМясо    || {(int)Food.мясо / 2} очков ");
+                Console.WriteLine($"What you will feed to the cat?\nFish\t\t|| {(int)Food.fish/2} cat points \nSausages\t|| {(int)Food.sausages / 2} cat points \nBread\t\t|| {(int)Food.bread / 2} cat ponts \nMeat\t\t|| {(int)Food.meat / 2} cat points ");
                 string food = Convert.ToString(Console.ReadLine());
                 food = food.ToLower();
                 Food foodChange = (Food)Enum.Parse(typeof(Food), food);
@@ -95,8 +100,7 @@ namespace Kitty
             }
             catch (Exception)
             {
-                Console.WriteLine("Выбрано что-то не из списка\nНажмите любую клавишу..");
-                Console.ReadKey();
+                Console.WriteLine("Wrong food!");
                 GUI(cat);
             }
         }
@@ -104,32 +108,28 @@ namespace Kitty
         void Play(KittySim cat)
         {
             cat.Happines += 5;
-            cat.LevelEating += 3;
-            Console.WriteLine("Вы поиграли с котейкой, настроение повысилось на 5!\nНажмите любую клавишу..");
-            Console.ReadKey();
+            cat.HungerLevel += 3;
+            Console.WriteLine("You played with the cat! It's happines got increased by 5!");
         }
 
         void Warns(KittySim cat)
         {
-            if (cat.LevelEating > 8)
+            if (cat.HungerLevel > 8)
             {
-                Console.WriteLine("Котик голоден!");
+                Console.WriteLine("Your cat is hungry! Feed it!");
             }
             if (cat.Happines < 2)
             {
-                Console.WriteLine("Котик грустит!");
+                Console.WriteLine("Your cat is bored! Play with it!");
             }
-            Console.WriteLine();
-            if (cat.LevelEating > 10)
+            if (cat.HungerLevel > 10)
             {
-                Console.Clear();
-                Console.WriteLine("Котик ушел к другому хозяину, потому что вы его не кормили.");
+                Console.WriteLine("Your cat left you because you didn't feed it.");
                 GameOver(cat);
             }
             if (cat.Happines < 0)
             {
-                Console.Clear();
-                Console.WriteLine("Котик ушел к другому хозяину, потому что ему стало очень грустно.");
+                Console.WriteLine("Your cat left you because you didn't played with it.");
                 GameOver(cat);
             }
         }
@@ -138,87 +138,82 @@ namespace Kitty
         {
             Console.ReadKey();
             Console.Clear();
-            cat.age = 0;
+            cat.Age = 0;
             cat.StartGame();
             GUI(cat);
         }
 
-        void EatSomething(Food something, KittySim cat)
+        void EatSomething(Food food, KittySim cat)
         {
-            if ((int)something <= cat.Points)
+            int foodPoints = (int)food;
+            if (foodPoints / 2 <= cat.Points)
             {
-                cat.LevelEating -= (int)something;
-                cat.Points -= (int)something/2;
-                Console.WriteLine($"Голод уменьшился на {(int)something}!");
+                cat.HungerLevel -= foodPoints;
+                cat.Points -= foodPoints / 2;
+                Console.WriteLine($"Cat's hunger was decreased by {foodPoints}!");
             }
             else
             {
-                Console.WriteLine("Не хватает очков!\nНажмите любую клавишу...");
+                Console.WriteLine("Not enough cat points!");
             }
-
-            if (cat.LevelEating > 11) cat.LevelEating = 11;
-            if (cat.LevelEating < 0) cat.LevelEating = 0;
         }
 
         void Walking(KittySim cat)
         {
-            string[] Events = { "Котик поймал вкусного жучка! Голод -2, настроение +3", "Котик подрался с другим котиком! Голод +2, настроение -1" };
+            string[] Events = { "Your cat catched a mouse!\nHunger -2\nHappines +3", "Your cat got into a fight with another cat!\nHunger +2\nHappines -1" };
             Random randomEvent = new Random();
 
             if (randomEvent.Next(0, 5) < 3)
             {
                 Console.WriteLine(Events[0]);
                 cat.Happines += 3;
-                cat.LevelEating -= 2;
+                cat.HungerLevel -= 2;
             }
             else
             {
                 Console.WriteLine(Events[1]);
                 cat.Happines -= 1;
-                cat.LevelEating += 2;
+                cat.HungerLevel += 2;
             }
 
-            Console.WriteLine("\nВы погуляли с котейкой!\nНажмите любую клавишу..");
-            Console.ReadKey();
+            Console.WriteLine("You've walked with your cat!");
         }
 
         void Train(KittySim cat)
         {
-            string[] Events = { "Котик отлично позанимался! +5 поинтов", "Котик неплохо позанимался! +3 поинта", "Котик слабовато занимался.. +1 поинт", "Котик всё время отвлекался! +0 поинтов" };
-            string Warn = "\nНажмите любую клавишу...";
+            string[] Events = { "Your cat have trained great! +5 points",
+                                "Your cat have trained good! +3 points",
+                                "Your cat have trained mediocre.. +1 point",
+                                "Your cat have trained bad! +0 points" };
             Random Train = new Random();
             switch (Train.Next(0, 3))
             {
                 case 0:
                     {
-                        Console.WriteLine(Events[0] + Warn);
-                        Console.ReadKey();
+                        Console.WriteLine(Events[0]);
                         cat.Points += 5;
                         break;
                     }
                 case 1:
                     {
-                        Console.WriteLine(Events[1] + Warn);
-                        Console.ReadKey();
+                        Console.WriteLine(Events[1]);
                         cat.Points += 3;
                         break;
                     }
                 case 2:
                     {
-                        Console.WriteLine(Events[2] + Warn);
-                        Console.ReadKey();
+                        Console.WriteLine(Events[2]);
                         cat.Points += 1;
                         break;
                     }
                 case 3:
                     {
-                        Console.WriteLine(Events[3] + Warn);
-                        Console.ReadKey();
+                        Console.WriteLine(Events[3]);
                         break;
                     }
                 default:
                     {
-                        Console.WriteLine("Ошибка!!!");
+                        Console.WriteLine("Error!!!");
                         break;
                     }
             }

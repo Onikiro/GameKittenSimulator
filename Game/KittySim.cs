@@ -8,13 +8,38 @@ namespace Kitty
         string sex;
         string name;
 
-        public string   Sex => sex;
-        public string Name => name;
+        public string     Sex => sex;
+        public string     Name => name;
 
-        public  int   LevelEating { get; set; }
-        public float          age { get; set; }
-        public   int     Happines { get; set; }
-        public   int       Points { get; set; }
+
+        private int       hungerLevel;
+        public int        HungerLevel
+        {
+            get => hungerLevel;
+            set
+            {
+                if (value > 11)
+                    value = 11;
+                if (value < 0)
+                    value = 0;
+                hungerLevel = value;
+            }
+        }
+
+        private float     age;
+        public  float     Age
+        {
+            get => age;
+            set
+            {
+                if (value < 0)
+                    value = 0;
+                age = value;
+            }
+        }
+        public  int       Happines { get; set; }
+        public  int       Points { get; set; }
+        
 
         public KittySim()
         {
@@ -23,41 +48,33 @@ namespace Kitty
 
         public void StartGame()
         {
-            ChangeSex();
             ChangeName();
+            ChangeSex();
             ChangeStats();
             Console.Clear();
         }
 
         void ChangeSex()
         {
-            Console.WriteLine("Пол вашего котенка (Мальчик/Девочка)");
-            try
+            Console.Write("Write your cat's sex (Boy/Girl): ");
+            sex = Console.ReadLine();
+            sex = sex.ToLower();
+            if (sex != "boy" && sex != "girl" || sex == null)
             {
-                sex = Console.ReadLine();
-                sex = sex.ToLower();
-                if (!sex.Contains("мальчик") && !sex.Contains("девочка") || sex == null)
-                {
-                    throw new Exception();
-                }
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("Пол выбран неверно" + "\n" + "Нажмите любую клавишу..");
-                Console.ReadKey();
+                Console.WriteLine("There are only two genders!");
                 ChangeSex();
             }
         }
 
         void ChangeName()
         {
-            Console.Write("Имя котенка: ");
+            Console.Write("Write your cat's name: ");
             name = Console.ReadLine();
         }
 
         void ChangeStats()
         {
-            LevelEating = 5;
+            HungerLevel = 5;
             Happines = 5;
             Points = 10;
         }
