@@ -4,7 +4,7 @@
     {
         static void Main(string[] args)
         {
-            KittyEvents cEvents = new KittyEvents(new KittySim());
+            KittyEvents kEvents = new KittyEvents(new KittySim());
         }
     }
 }
