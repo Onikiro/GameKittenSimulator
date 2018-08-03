@@ -1,16 +1,56 @@
 ﻿using System;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace Kitty
 {
-    enum Food { fish = 6, sausages = 5, bread = 3, meat = 8, }
+    enum Food { fish = 6, sausages = 5, bread = 3, meat = 8 }
     public class KittyEvents
     {
         bool isLive = false;
         public bool IsLive => isLive;
 
+        string defaultSavePath = ".\\save.json";
+
         public KittyEvents(KittySim cat)
         {
+            if(!isLoading(ref cat))
+                cat.StartGame();
             GUI(cat);
+        }
+
+        bool isLoading(ref KittySim cat)
+        {
+            Console.Write("Start new game or load existing one? (Start|Load): ");
+            switch(Console.ReadLine().ToLower())
+            {
+                case "load":
+                    {
+                        try
+                        {
+                            cat = Load(defaultSavePath);
+                            Console.WriteLine("Successfully loaded your cat!");
+                        }
+                        catch (FileNotFoundException)
+                        {
+                            Console.WriteLine("We didn't find your save file!");
+                            isLoading(ref cat);
+                        }
+                        Console.ReadLine();
+                        return true;
+                    }
+                case "start":
+                    {
+                        return false;
+                    }
+                default:
+                    {
+                        Console.WriteLine("Wrong option!");
+                        isLoading(ref cat);
+                        break;
+                    }       
+            }
+            return false;
         }
 
         void GUI(KittySim cat)
@@ -22,7 +62,6 @@ namespace Kitty
                 CatInfo(cat);
                 Warns(cat);
                 Actions(cat);
-                AddCatStats(cat);
             }
         }
 
@@ -35,7 +74,12 @@ namespace Kitty
 
         void CatInfo(KittySim cat)
         {
-            Console.WriteLine($"Pet's name: {cat.Name}\nPet's sex: {cat.Sex}\nPet's age: {cat.Age} days\nPet's hunger: {cat.HungerLevel}\nPet's happines: {cat.Happines}\nPet's points: {cat.Points}");
+            Console.WriteLine($"Pet's name: {cat.Name}\n" +
+                              $"Pet's sex: {cat.Sex}\n" +
+                              $"Pet's age: {cat.Age} days\n" +
+                              $"Pet's hunger: {cat.HungerLevel}\n" +
+                              $"Pet's happines: {cat.Happines}\n" +
+                              $"Pet's points: {cat.Points}");
         }
 
         void Actions(KittySim cat)
@@ -43,7 +87,7 @@ namespace Kitty
             try
             {
                 string input; //Вводные данные
-                Console.WriteLine("Possible actions: feed, walk, play, train");
+                Console.WriteLine("Possible actions: feed, walk, play, train, save, load");
                 Console.Write("Choose one action: ");
                 input = Console.ReadLine();
                 input = input.ToLower();
@@ -73,6 +117,26 @@ namespace Kitty
                             Console.ReadLine();
                             break;
                         }
+                    case "save":
+                        {
+                            Save(cat, ".\\save.json");
+                            Console.WriteLine("Successfully saved your cat!");
+                            Console.ReadLine();
+                            break;
+                        }
+                    case "load":
+                        {
+                            try
+                            {
+                                cat = Load(defaultSavePath);
+                                Console.WriteLine("Successfully loaded your cat!");
+                            } catch (FileNotFoundException)
+                            {
+                                Console.WriteLine("We didn't find your save file!");
+                            }
+                            Console.ReadLine();
+                            break;
+                        }
                     default:
                         {
                             Console.WriteLine("Wrong action!");
@@ -96,7 +160,7 @@ namespace Kitty
                 food = food.ToLower();
                 Food foodChange = (Food)Enum.Parse(typeof(Food), food);
                 EatSomething(foodChange, cat);
-                Console.ReadKey();
+                AddCatStats(cat);
             }
             catch (Exception)
             {
@@ -110,6 +174,7 @@ namespace Kitty
             cat.Happines += 5;
             cat.HungerLevel += 3;
             Console.WriteLine("You played with the cat! It's happines got increased by 5!");
+            AddCatStats(cat);
         }
 
         void Warns(KittySim cat)
@@ -136,7 +201,7 @@ namespace Kitty
 
         void GameOver(KittySim cat)
         {
-            Console.ReadKey();
+            Console.ReadLine();
             Console.Clear();
             cat.Age = 0;
             cat.StartGame();
@@ -177,6 +242,7 @@ namespace Kitty
             }
 
             Console.WriteLine("You've walked with your cat!");
+            AddCatStats(cat);
         }
 
         void Train(KittySim cat)
@@ -217,6 +283,33 @@ namespace Kitty
                         break;
                     }
             }
+            AddCatStats(cat);
+        }
+
+        void Save(KittySim cat, string savePath)
+        {
+            string serialized = JsonConvert.SerializeObject(cat);
+            using (StreamWriter sw = new StreamWriter(savePath, false))
+            {
+                sw.Write(serialized);
+            }
+        }
+
+        KittySim Load(string loadPath)
+        {
+            string deserializable = null;
+            using (StreamReader sr = new StreamReader(loadPath))
+            {
+                try
+                {
+                    deserializable = sr.ReadToEnd();
+                }
+                catch(FileNotFoundException)
+                {
+                    throw;
+                }
+            }
+            return JsonConvert.DeserializeObject<KittySim>(deserializable);
         }
     }
 }

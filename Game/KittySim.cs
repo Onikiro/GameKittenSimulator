@@ -1,16 +1,13 @@
 ﻿using System;
+using Newtonsoft.Json;
 
 namespace Kitty
 {
+    [Serializable]
     public class KittySim
     {
-
-        string sex;
-        string name;
-
-        public string     Sex => sex;
-        public string     Name => name;
-
+        public string     Sex { get; set; }
+        public string     Name { get; set; }
 
         private int       hungerLevel;
         public int        HungerLevel
@@ -37,14 +34,10 @@ namespace Kitty
                 age = value;
             }
         }
+
         public  int       Happines { get; set; }
         public  int       Points { get; set; }
         
-
-        public KittySim()
-        {
-            StartGame();
-        }
 
         public void StartGame()
         {
@@ -57,9 +50,9 @@ namespace Kitty
         void ChangeSex()
         {
             Console.Write("Write your cat's sex (Boy/Girl): ");
-            sex = Console.ReadLine();
-            sex = sex.ToLower();
-            if (sex != "boy" && sex != "girl" || sex == null)
+            Sex = Console.ReadLine();
+            Sex = Sex.ToLower();
+            if (Sex != "boy" && Sex != "girl" || Sex == null)
             {
                 Console.WriteLine("There are only two genders!");
                 ChangeSex();
@@ -69,7 +62,7 @@ namespace Kitty
         void ChangeName()
         {
             Console.Write("Write your cat's name: ");
-            name = Console.ReadLine();
+            Name = Console.ReadLine();
         }
 
         void ChangeStats()
@@ -78,6 +71,5 @@ namespace Kitty
             Happines = 5;
             Points = 10;
         }
-
     }
 }
