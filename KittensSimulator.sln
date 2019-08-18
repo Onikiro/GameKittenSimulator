@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simulator", "Game\Simulator.csproj", "{D3E5693D-8733-4F55-B1D8-A76E340F4CFA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KittensSimulator.Console", "KittensSimulator.Console\KittensSimulator.Console.csproj", "{3E9F0931-3DFF-4583-9644-0F6BE273DF39}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,8 +17,15 @@ Global
 		{D3E5693D-8733-4F55-B1D8-A76E340F4CFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3E5693D-8733-4F55-B1D8-A76E340F4CFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3E5693D-8733-4F55-B1D8-A76E340F4CFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E9F0931-3DFF-4583-9644-0F6BE273DF39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E9F0931-3DFF-4583-9644-0F6BE273DF39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E9F0931-3DFF-4583-9644-0F6BE273DF39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E9F0931-3DFF-4583-9644-0F6BE273DF39}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {417333C4-A299-4669-94E1-2149062D28AB}
 	EndGlobalSection
 EndGlobal

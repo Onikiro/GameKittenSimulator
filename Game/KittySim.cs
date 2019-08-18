@@ -1,16 +1,15 @@
 ﻿using System;
-using Newtonsoft.Json;
 
 namespace Kitty
 {
     [Serializable]
     public class KittySim
     {
-        public string     Sex { get; set; }
-        public string     Name { get; set; }
+        public string Sex { get; set; }
+        public string Name { get; set; }
 
-        private int       hungerLevel;
-        public int        HungerLevel
+        private int hungerLevel;
+        public int HungerLevel
         {
             get => hungerLevel;
             set
@@ -23,8 +22,8 @@ namespace Kitty
             }
         }
 
-        private float     age;
-        public  float     Age
+        private float age;
+        public float Age
         {
             get => age;
             set
@@ -35,9 +34,9 @@ namespace Kitty
             }
         }
 
-        public  int       Happines { get; set; }
-        public  int       Points { get; set; }
-        
+        public int Happines { get; set; }
+        public int Points { get; set; }
+
 
         public void StartGame()
         {
